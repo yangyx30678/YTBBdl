@@ -1,7 +1,7 @@
 {
-  "name": "yt-dlp-server",
+  "name": "YTBBdl-server",
   "version": "1.0.0",
-  "description": "Local server to run yt-dlp commands",
+  "description": "Local server to run yt-dlp, bbdown commands",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
