@@ -1,45 +1,67 @@
-function addDownloadButton() {
-  // 避免重複插入
+function insertDownloadButton() {
+  // 如果按鈕已存在就跳過
   if (document.querySelector("#yt-dlp-download-btn")) return;
 
-  // 找到訂閱按鈕容器
-  const subscribeButton = document.querySelector('ytd-subscribe-button-renderer tp-yt-paper-button');
-  if (!subscribeButton) return;
+  // 找訂閱按鈕元件
+  const subscribeBtn = document.querySelector("ytd-subscribe-button-renderer");
+  if (!subscribeBtn) return;
 
-  // 複製訂閱按鈕的 class
+  // 找訂閱按鈕的外層容器（flex row）
+  const container = subscribeBtn.parentElement;
+  if (!container || !container.style) return;
+  container.style.display = "flex";
+  container.style.flexDirection = "row";
+  container.style.alignItems = "center";
+
+  // 建立按鈕
   const btn = document.createElement("button");
   btn.id = "yt-dlp-download-btn";
-  btn.className = subscribeButton.className; // 複製樣式
-  btn.setAttribute("style", subscribeButton.getAttribute("style")); // 複製行內樣式
-  btn.innerHTML = `
-    <div class="yt-spec-button-shape-next__icon" aria-hidden="true">
-      <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" fill="currentColor">
-        <path d="M480-120q-74 0-140-28t-114.5-77Q177-274 148.5-340T120-480q0-74 28.5-140t77-114q48.5-48 114.5-76.5T480-840q74 0 140 28.5t114.5 77q48.5 48.5 77 114T840-480q0 74-28.5 140T734-225q-48.5 49-114.5 77T480-120Zm0-560q-17 0-28.5 11.5T440-640v200l146 88q14 8 28 4t22-18q8-14 4-28t-18-22l-126-76v-148q0-17-11.5-28.5T480-680Z"/>
-      </svg>
-    </div>
-    <div class="yt-spec-button-shape-next__button-text-content">
-      <span class="yt-core-attributed-string yt-core-attributed-string--white-space-no-wrap" role="text">
-        下載
-      </span>
-    </div>
-  `;
+  btn.textContent = "下載";
+  btn.title = "下載影片";
+  btn.className =
+    "yt-spec-button-shape-next yt-spec-button-shape-next--tonal yt-spec-button-shape-next--mono yt-spec-button-shape-next--size-m yt-spec-button-shape-next--icon-leading yt-spec-button-shape-next--enable-backdrop-filter-experiment";
+  btn.style.marginLeft = "8px";
 
-  // 綁定下載事件
+  // 加入 icon
+  const iconWrapper = document.createElement("div");
+  iconWrapper.setAttribute("aria-hidden", "true");
+  iconWrapper.className = "yt-spec-button-shape-next__icon";
+  iconWrapper.innerHTML = `
+    <span class="ytIconWrapperHost" style="width: 24px; height: 24px; display: flex; align-items: center; justify-content: center;">
+      <span class="yt-icon-shape yt-spec-icon-shape" style="display: flex; align-items: center;">
+        <div style="width: 100%; height: 100%; display: block; fill: currentColor;">
+          <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" focusable="false" aria-hidden="true" style="pointer-events: none; display: inherit; width: 100%; height: 100%;">
+            <path d="M17 18v1H6v-1h11zm-.5-6.6-.7-.7-3.8 3.7V4h-1v10.4l-3.8-3.8-.7.7 5 5 5-4.9z"></path>
+          </svg>
+        </div>
+      </span>
+    </span>
+  `;
+  btn.prepend(iconWrapper);
+
+  // 點擊事件
   btn.addEventListener("click", () => {
-    const videoUrl = window.location.href;
+    const url = new URL(window.location.href);
+    const videoId = url.searchParams.get('v');
+    const cleanUrl = videoId ? `https://www.youtube.com/watch?v=${videoId}` : window.location.href;
+
     fetch("http://localhost:5000/download", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ url: videoUrl })
+      body: JSON.stringify({ url: cleanUrl })
     })
-      .then(r => r.text())
-      .then(alert)
-      .catch(err => alert("下載失敗: " + err));
+    .then(r => r.text())
+    .then(alert)
+    .catch(err => alert("下載失敗: " + err));
   });
 
-  // 把新按鈕插在訂閱按鈕的右邊
-  subscribeButton.parentElement.insertBefore(btn, subscribeButton.nextSibling);
+  // 插入訂閱按鈕旁邊（右側）
+  container.insertBefore(btn, subscribeBtn.nextSibling);
 }
 
-// YouTube 頁面是動態載入的，所以要定時檢查
-setInterval(addDownloadButton, 1000);
+// 監聽 DOM 變化，自動呼叫插入按鈕函式
+const observer = new MutationObserver(insertDownloadButton);
+observer.observe(document.body, { childList: true, subtree: true });
+
+// 頁面載入時先嘗試插入一次
+insertDownloadButton();
