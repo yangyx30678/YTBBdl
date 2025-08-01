@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "YT-DLP Downloader",
+  "version": "1.0",
+  "description": "Send YouTube video URL to yt-dlp server.",
+  "permissions": ["activeTab", "scripting"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icon.png"
+    }
+  },
+  "background": {
+    "service_worker": "background.js"
+  }
+}
