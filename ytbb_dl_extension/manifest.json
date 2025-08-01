@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "YTBBdl",
+  "version": "1.0",
+  "description": "加上下載按鈕",
+  "permissions": ["activeTab", "scripting"],
+  "content_scripts": [
+    {
+      "matches": ["*://www.youtube.com/*"],
+      "js": ["content.js"]
+    }
+  ],
+  "icons": {
+    "128": "icon.png"
+  }
+}
