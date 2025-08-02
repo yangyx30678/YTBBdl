@@ -11,23 +11,28 @@ app.post('/download', (req, res) => {
   const { url } = req.body;
   if (!url) return res.status(400).send('No URL provided.');
 
-  // 檢查 yt-dlp 是否可用 (執行 `yt-dlp --version` 看有沒有錯誤)
-  exec('yt-dlp --version', (checkErr) => {
-    if (checkErr) {
-      console.error('yt-dlp not available:', checkErr);
-      return res.status(500).send('yt-dlp is not installed or not available.');
-    }
+  const downloadFolder = '../downloads'; // 確保資料夾已存在
 
-    const downloadFolder = '../downloads';  // 指定下載資料夾路徑，記得資料夾要存在
-    const command = `yt-dlp -o "${downloadFolder}/%(title)s.%(ext)s" "${url}"`;
-    exec(command, (err, stdout, stderr) => {
-      if (err) {
-        console.error(stderr);
-        return res.status(500).send('Download failed.');
-      }
-      console.log(stdout);
-      res.sendStatus(200);
-    });
+  // 判斷是 YouTube 還是 Bilibili
+  let command;
+  if (/youtube\.com|youtu\.be/.test(url)) {
+    // YouTube 用 yt-dlp
+    command = `yt-dlp -o "${downloadFolder}/%(title)s.%(ext)s" "${url}"`;
+  } else if (/bilibili\.com/.test(url)) {
+    // Bilibili 用 BBDown
+    command = `BBDown --work-dir "${downloadFolder}" "${url}"`;
+  } else {
+    return res.status(400).send('Unsupported URL.');
+  }
+
+  console.log(`Downloading: ${url}`);
+  exec(command, (err, stdout, stderr) => {
+    if (err) {
+      console.error(stderr);
+      return res.status(500).send('Download failed.');
+    }
+    console.log(stdout);
+    res.sendStatus(200);
   });
 });
 
