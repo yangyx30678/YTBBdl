@@ -1,2 +1,2 @@
-cd /d ytbb_dl_server
+cd /d server
 cmd /k "npm start"

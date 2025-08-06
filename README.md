@@ -38,6 +38,22 @@ YouTube and BiliBili downloader as a Chromium plugin.
   npm start
   ```
 
+3. **啟動方式：**
+
+- **pm2 開機自啟動** 
+- `pm2-windows-startup`
+- PM2 在 Windows 下開機自啟動的套件
+  ```bash
+  npm install -g pm2-windows-startup
+  pm2-startup install
+  ```
+  安裝完成後啟動 server
+  ```bash
+  pm2 start "something\YTBBdl\server\server.js" --name ytbbdl
+             ^請自行更改
+  pm2 save
+  ```
+
 ---
 
 ## 使用方式
