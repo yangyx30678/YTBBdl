@@ -1,7 +1,7 @@
 
 # YTBBdl
 
-YouTube and BiliBili downloader as a Chromium plugin.
+YouTube and BiliBili downloader as a Chromium extension.
 
 ---
 
@@ -15,12 +15,11 @@ YouTube and BiliBili downloader as a Chromium plugin.
 
 ## 安裝與啟動
 
-1. **下載或 clone 此專案到你的本地電腦。**
+1. **[下載 ytbbdl](https://github.com/yangyx30678/YTBBdl/releases)**
 
-2. **安裝相依套件**（可選，視你的專案需求）  
-   如果有 `package.json`，請先在 `server` 資料夾中執行：  
+2. **安裝相依套件**
+   在 `server` 資料夾中執行：  
    ```bash
-   cd server
    npm install
    ```
 
@@ -40,8 +39,9 @@ YouTube and BiliBili downloader as a Chromium plugin.
 
 3. **啟動方式：**
 
-- **pm2 開機自啟動** 
-- `pm2-windows-startup`
+- **pm2 開機自啟動**
+  
+  `pm2-windows-startup`
 - PM2 在 Windows 下開機自啟動的套件
   ```bash
   npm install -g pm2-windows-startup
@@ -49,7 +49,7 @@ YouTube and BiliBili downloader as a Chromium plugin.
   ```
   安裝完成後啟動 server
   ```bash
-  pm2 start "something\YTBBdl\server\server.js" --name ytbbdl
+  pm2 start "something\YTBBdl\server\server_mp4.js" --name ytbbdl
              ^請自行更改
   pm2 save
   ```
@@ -65,3 +65,6 @@ YouTube and BiliBili downloader as a Chromium plugin.
 3. 點擊「載入未封裝擴充功能」，選擇此專案根目錄。
 
 4. 在 YouTube 或 BiliBili 網頁打開影片頁面，擴充功能會自動插入下載按鈕。
+
+## 備註
+`server.js` 以及 `server_mp4.js` 差異是 `server_mp4.js` 會把下載好的檔案轉為 h264 的 mp4 保證相容性，`server.js` 則會保留下載下來的檔案格式
