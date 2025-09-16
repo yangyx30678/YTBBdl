@@ -9,6 +9,7 @@ app.use(express.json());
 
 app.post('/download', (req, res) => {
   const { url } = req.body;
+  console.log(`url:${url}`);
   if (!url) return res.status(400).send('No URL provided.');
 
   // 檢查 yt-dlp 是否可用 (執行 `yt-dlp --version` 看有沒有錯誤)
@@ -19,7 +20,7 @@ app.post('/download', (req, res) => {
     }
 
     const downloadFolder = '../downloads';  // 指定下載資料夾路徑，記得資料夾要存在
-    const command = `yt-dlp -o "${downloadFolder}/%(title)s.%(ext)s" "${url}" -S vcodec:h264 --merge-output-format mp4 `;
+    const command = `yt-dlp -f bestvideo+bestaudio -o "${downloadFolder}/%(title)s.%(ext)s" "${url}" --recode-video mp4`;
     exec(command, (err, stdout, stderr) => {
       if (err) {
         console.error(stderr);
