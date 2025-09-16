@@ -37,12 +37,9 @@ YouTube and BiliBili downloader as a Chromium extension.
   npm start
   ```
 
-3. **啟動方式：**
+4. **pm2 開機自啟動：(可選)**
 
-- **pm2 開機自啟動**
-  
-  `pm2-windows-startup`
-- PM2 在 Windows 下開機自啟動的套件
+- 安裝 PM2 在 Windows 下開機自啟動的套件
   ```bash
   npm install -g pm2-windows-startup
   pm2-startup install
@@ -53,6 +50,14 @@ YouTube and BiliBili downloader as a Chromium extension.
              ^請自行更改
   pm2 save
   ```
+5. **啟動畫面**
+
+    ```cmd
+    > YTBBdl-server@1.0.0 start
+    > node server_mp4.js
+
+    Server is running on http://localhost:5000
+    ```
 
 ---
 
