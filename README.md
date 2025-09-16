@@ -7,9 +7,8 @@ YouTube and BiliBili downloader as a Chromium extension.
 
 ## 需求
 
-- Node.js (請先安裝 Node.js 環境，建議版本 14 以上)
-
-你可以從 [Node.js 官方網站](https://nodejs.org/) 下載並安裝。
+- [Node.js](https://nodejs.org/zh-tw/download/current)
+- [yt-dlp](https://github.com/yt-dlp/yt-dlp)
 
 ---
 
