@@ -20,7 +20,7 @@ app.post('/download', (req, res) => {
     }
 
     const downloadFolder = '../downloads';  // 指定下載資料夾路徑，記得資料夾要存在
-    const command = `yt-dlp -f bestvideo+bestaudio -o "${downloadFolder}/%(title)s.%(ext)s" "${url}" --recode-video mp4`;
+    const command = `yt-dlp  -f bestvideo+bestaudio -o "${downloadFolder}/%(title)s.%(ext)s" "${url}" --recode-video mp4`;
     exec(command, (err, stdout, stderr) => {
       if (err) {
         console.error(stderr);
