@@ -7,32 +7,45 @@ const PORT = 5000;
 app.use(cors());
 app.use(express.json());
 
+function getPreferredEncoder(callback) {
+  exec('ffmpeg -encoders', (err, stdout) => {
+    if (err) {
+      console.error('ffmpeg check failed:', err);
+      return callback('libx264'); // fallback
+    }
+    if (stdout.includes('h264_nvenc')) {
+      console.log('Using GPU encoder: h264_nvenc');
+      return callback('h264_nvenc');
+    } else {
+      console.log('Using CPU encoder: libx264');
+      return callback('libx264');
+    }
+  });
+}
+
 app.post('/download', (req, res) => {
   const { url } = req.body;
   if (!url) return res.status(400).send('No URL provided.');
 
-  const downloadFolder = '../downloads'; // 確保資料夾已存在
-
-  // 判斷是 YouTube 還是 Bilibili
-  let command;
-  if (/youtube\.com|youtu\.be/.test(url)) {
-    // YouTube 用 yt-dlp
-    command = `yt-dlp -o "${downloadFolder}/%(title)s.%(ext)s" "${url}"`;
-  } else if (/bilibili\.com/.test(url)) {
-    // Bilibili 用 BBDown
-    command = `BBDown --work-dir "${downloadFolder}" "${url}"`;
-  } else {
-    return res.status(400).send('Unsupported URL.');
-  }
-
-  console.log(`Downloading: ${url}`);
-  exec(command, (err, stdout, stderr) => {
-    if (err) {
-      console.error(stderr);
-      return res.status(500).send('Download failed.');
+  exec('yt-dlp --version', (checkErr) => {
+    if (checkErr) {
+      console.error('yt-dlp not available:', checkErr);
+      return res.status(500).send('yt-dlp is not installed or not available.');
     }
-    console.log(stdout);
-    res.sendStatus(200);
+
+    getPreferredEncoder((videoEncoder) => {
+      const downloadFolder = '../downloads';
+      const command = `yt-dlp --no-playlist -f bestvideo+bestaudio -o "${downloadFolder}/%(title)s.%(ext)s" "${url}" --postprocessor-args "ffmpeg:-c:v ${videoEncoder} -crf 23 -preset fast -c:a aac -f mp4"`;
+
+      exec(command, (err, stdout, stderr) => {
+        if (err) {
+          console.error(stderr);
+          return res.status(500).send('Download failed.');
+        }
+        console.log(stdout);
+        res.sendStatus(200);
+      });
+    });
   });
 });
 
