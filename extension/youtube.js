@@ -90,3 +90,77 @@ const observer = new MutationObserver(insertDownloadButton);
 observer.observe(document.body, { childList: true, subtree: true });
 
 insertDownloadButton();
+
+function insertPlaylistDownloadButton() {
+  if (document.querySelector("#yt-dlp-playlist-download-btn")) return;
+
+  const actionsContainer = document.querySelector(
+    "#playlist-actions ytd-menu-renderer #top-level-buttons-computed"
+  );
+  if (!actionsContainer) return;
+
+  const btn = document.createElement("button");
+  btn.id = "yt-dlp-playlist-download-btn";
+  btn.className =
+    "yt-spec-button-shape-next yt-spec-button-shape-next--text yt-spec-button-shape-next--mono yt-spec-button-shape-next--size-m yt-spec-button-shape-next--icon-only-default yt-spec-button-shape-next--enable-backdrop-filter-experiment";
+  btn.setAttribute("aria-pressed", "false");
+  btn.setAttribute("aria-label", "下載清單");
+
+  // 建立 tooltip
+  const tooltip = document.createElement("tp-yt-paper-tooltip");
+  tooltip.setAttribute("fit-to-visible-bounds", "");
+  tooltip.setAttribute("offset", "8");
+  tooltip.setAttribute("role", "tooltip");
+  tooltip.setAttribute("tabindex", "-1");
+  tooltip.textContent = "下載清單";
+
+  btn.appendChild(tooltip); // tooltip
+
+  // icon
+  function setIcon(active = false) {
+    btn.style.color = active ? "var(--yt-spec-call-to-action)" : "#f1f1f1";
+    btn.innerHTML = `
+      <div style="width:24px; height:24px; display: block; fill: currentcolor;" aria-hidden="true" class="yt-spec-button-shape-next__icon">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" height="24" viewBox="0 0 24 24" width="24" focusable="false" aria-hidden="true" style="pointer-events: none; display: inherit; width: 100%; height: 100%;">
+          <path clip-rule="evenodd" d="M17.53 11.53c.293-.293.293-.767 0-1.06-.293-.293-.767-.293-1.06 0l-3.72 3.72V3c0-.414-.336-.75-.75-.75s-.75.336-.75.75v11.19l-3.72-3.72c-.293-.293-.767-.293-1.06 0-.293.293-.293.767 0 1.06l5 5 .53.53.53-.53 5-5Zm1.72 8.97c.414 0 .75-.336.75-.75s-.336-.75-.75-.75H4.75c-.414 0-.75.336-.75.75s.336.75.75.75h14.5Z" fill-rule="evenodd"></path>
+        </svg>
+      </div>
+    `;
+    btn.appendChild(tooltip);
+  }
+
+  // 狀態
+  function setBtnDefault() { btn.setAttribute("aria-pressed", "false"); setIcon(false); btn.title = "下載播放清單"; }
+  function setBtnActive() { btn.setAttribute("aria-pressed", "true"); setIcon(true); btn.title = "已下載"; }
+
+  setBtnDefault();
+
+  btn.addEventListener("click", () => {
+    const url = new URL(window.location.href);
+    const listId = url.searchParams.get("list");
+    if (!listId) return;
+
+    const playlistUrl = `https://www.youtube.com/playlist?list=${listId}`;
+    const pressed = btn.getAttribute("aria-pressed") === "true";
+    if (pressed) {
+      setBtnDefault();
+    } else {
+      setBtnActive();
+      fetch("http://localhost:5000/download", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: playlistUrl }),
+      }).catch(() => setBtnDefault());
+    }
+  });
+
+  actionsContainer.appendChild(btn);
+}
+
+// MutationObserver
+const observer1 = new MutationObserver(() => insertPlaylistDownloadButton());
+observer1.observe(document.body, { childList: true, subtree: true });
+
+insertPlaylistDownloadButton();
+
+

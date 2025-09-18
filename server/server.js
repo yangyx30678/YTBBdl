@@ -25,6 +25,7 @@ function getPreferredEncoder(callback) {
 
 app.post('/download', (req, res) => {
   const { url } = req.body;
+  console.log(url);
   if (!url) return res.status(400).send('No URL provided.');
 
   exec('yt-dlp --version', (checkErr) => {
