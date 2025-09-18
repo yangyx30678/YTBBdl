@@ -1,10 +1,10 @@
 {
   "name": "YTBBdl-server",
-  "version": "1.0.1",
-  "description": "Local server to run yt-dlp, bbdown commands",
-  "main": "server_mp4.js",
+  "version": "1.0.2",
+  "description": "Local server to run yt-dlp commands",
+  "main": "server.js",
   "scripts": {
-    "start": "node server_mp4.js"
+    "start": "node server.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
