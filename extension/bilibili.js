@@ -23,8 +23,6 @@ function insertDownloadButtonBilibili() {
     fontSize: "14px",
     border: "none",
     minWidth: "100px",       // 避免文字擠壓圖示
-    // padding: "6px 12px",
-    // borderRadius: "4px",
     backgroundColor: "transparent",
     color: "#61666d",
     transition: "color 0.4s, background-color 0.4s"
@@ -33,13 +31,11 @@ function insertDownloadButtonBilibili() {
   // hover 效果
   btn.addEventListener("mouseenter", () => {
     if (!btn.disabled) {
-      // btn.style.backgroundColor = "rgba(0,174,236,0.1)";
       btn.style.color = "#00aeec";
     }
   });
   btn.addEventListener("mouseleave", () => {
     if (!btn.disabled) {
-      // btn.style.backgroundColor = "transparent";
       btn.style.color = "#61666d";
     }
   });
@@ -57,7 +53,6 @@ function insertDownloadButtonBilibili() {
 
   function setBtnDownloading() {
     btn.disabled = true;
-    // btn.style.backgroundColor = "rgba(0,174,236,0.1)";
     btn.style.color = "#00aeec";
     btn.title = "下載中";
     btn.innerHTML = `
