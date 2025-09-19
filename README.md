@@ -71,4 +71,4 @@ YouTube and BiliBili downloader as a Chromium extension.
 4. 在 YouTube 或 BiliBili 網頁打開影片頁面，擴充功能會自動插入下載按鈕。
 
 ## 備註
-該程式依賴 [yt-dlp](https://github.com/yt-dlp/yt-dlp) 以及 [ffmpeg](https://ffmpeg.org/)
+該程式依賴 [Node.js](https://nodejs.org/zh-tw/download/current)、[yt-dlp](https://github.com/yt-dlp/yt-dlp) 以及 [ffmpeg](https://ffmpeg.org/)
