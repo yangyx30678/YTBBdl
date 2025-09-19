@@ -1,5 +1,5 @@
 const express = require('express');
-const { exec } = require('child_process');
+const { spawn } = require('child_process');
 const cors = require('cors');
 const app = express();
 const PORT = 5000;
@@ -8,17 +8,19 @@ app.use(cors());
 app.use(express.json());
 
 function getPreferredEncoder(callback) {
-  exec('ffmpeg -encoders', (err, stdout) => {
-    if (err) {
-      console.error('ffmpeg check failed:', err);
-      return callback('libx264'); // fallback
-    }
-    if (stdout.includes('h264_nvenc')) {
+  const ffmpeg = spawn('ffmpeg', ['-encoders']);
+  let output = '';
+
+  ffmpeg.stdout.on('data', (data) => output += data.toString());
+  ffmpeg.stderr.on('data', (data) => output += data.toString());
+
+  ffmpeg.on('close', () => {
+    if (output.includes('h264_nvenc')) {
       console.log('Using GPU encoder: h264_nvenc');
-      return callback('h264_nvenc');
+      callback('h264_nvenc');
     } else {
       console.log('Using CPU encoder: libx264');
-      return callback('libx264');
+      callback('libx264');
     }
   });
 }
@@ -26,32 +28,33 @@ function getPreferredEncoder(callback) {
 app.post('/download', (req, res) => {
   const { url, playlist } = req.body;
   console.log('Playlist mode:', playlist);
-
   if (!url) return res.status(400).send('No URL provided.');
 
-  exec('yt-dlp --version', (checkErr) => {
-    if (checkErr) {
-      console.error('yt-dlp not available:', checkErr);
-      return res.status(500).send('yt-dlp is not installed or not available.');
-    }
+  getPreferredEncoder((videoEncoder) => {
+    const downloadFolder = '../downloads';
+    const playlistFlag = playlist ? '' : '--no-playlist';
 
-    getPreferredEncoder((videoEncoder) => {
-      const downloadFolder = '../downloads';
-      const playlistFlag = playlist ? '' : '--no-playlist';
-      const command = `yt-dlp ${playlistFlag} -f bestvideo+bestaudio -o "${downloadFolder}/%(title)s.%(ext)s" --merge-output-format mp4 "${url}" --postprocessor-args "ffmpeg:-c:v ${videoEncoder} -crf 23 -preset fast -c:a aac -f mp4"`;
+  const args = [
+    ...(playlist ? [] : ['--no-playlist']), // 注意這裡加了 ...
+    '-f', 'bestvideo+bestaudio',
+    '-o', `${downloadFolder}/%(title)s.%(ext)s`,
+    '--merge-output-format', 'mp4',
+    url,
+    '--postprocessor-args', `ffmpeg:-c:v ${videoEncoder} -crf 23 -preset fast -c:a aac -f mp4`
+  ];
 
-      exec(command, (err, stdout, stderr) => {
-        if (err) {
-          console.error(stderr);
-          return res.status(500).send('Download failed.');
-        }
-        console.log(stdout);
-        res.sendStatus(200);
-      });
+    console.log('args:', args);
+
+    // spawn 並繫結 stdout/stderr 直接顯示
+    const yt = spawn('yt-dlp', args, { stdio: 'inherit' });
+
+    yt.on('close', (code) => {
+      console.log(`\nDownload finished with code ${code}`);
+      res.sendStatus(code === 0 ? 200 : 500);
     });
   });
 });
 
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Server is running at http://localhost:${PORT}`);
 });
