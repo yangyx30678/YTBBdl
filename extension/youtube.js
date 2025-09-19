@@ -121,7 +121,7 @@ function insertPlaylistDownloadButton() {
     btn.style.color = active ? "var(--yt-spec-call-to-action)" : "#f1f1f1";
     btn.innerHTML = `
       <div style="width:24px; height:24px; display: block; fill: currentcolor;" aria-hidden="true" class="yt-spec-button-shape-next__icon">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" height="24" viewBox="0 0 24 24" width="24" focusable="false" aria-hidden="true" style="pointer-events: none; display: inherit; width: 100%; height: 100%;" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" height="24" viewBox="1.5 2 20 19" width="24" focusable="false" aria-hidden="true" style="pointer-events: none; display: inherit; width: 100%; height: 100%;" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink">
           <path d="M17 18v1H6v-1h11zm-.5-6.6-.7-.7-3.8 3.7V4h-1v10.4l-3.8-3.8-.7.7 5 5 5-4.9z"/>
         </svg>
       </div>
