@@ -71,4 +71,4 @@ YouTube and BiliBili downloader as a Chromium extension.
 4. 在 YouTube 或 BiliBili 網頁打開影片頁面，擴充功能會自動插入下載按鈕。
 
 ## 備註
-`server.js` 以及 `server_mp4.js` 差異是 `server_mp4.js` 會把下載好的檔案轉為 h264 的 mp4 保證相容性，`server.js` 則會保留下載下來的檔案格式
+該程式依賴 [yt-dlp](https://github.com/yt-dlp/yt-dlp) 以及 [ffmpeg](https://ffmpeg.org/)
