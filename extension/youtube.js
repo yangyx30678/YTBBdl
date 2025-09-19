@@ -138,6 +138,7 @@ function insertPlaylistDownloadButton() {
   btn.addEventListener("click", () => {
     const url = new URL(window.location.href);
     const listId = url.searchParams.get("list");
+    const downloadPlaylist = true;  
     if (!listId) return;
 
     const playlistUrl = `https://www.youtube.com/playlist?list=${listId}`;
@@ -149,7 +150,7 @@ function insertPlaylistDownloadButton() {
       fetch("http://localhost:5000/download", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url: playlistUrl }),
+        body: JSON.stringify({ url: playlistUrl, playlist: downloadPlaylist }),
       }).catch(() => setBtnDefault());
     }
   });

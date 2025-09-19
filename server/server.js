@@ -24,8 +24,9 @@ function getPreferredEncoder(callback) {
 }
 
 app.post('/download', (req, res) => {
-  const { url } = req.body;
-  console.log(url);
+  const { url, playlist } = req.body;
+  console.log('Playlist mode:', playlist);
+
   if (!url) return res.status(400).send('No URL provided.');
 
   exec('yt-dlp --version', (checkErr) => {
@@ -36,7 +37,8 @@ app.post('/download', (req, res) => {
 
     getPreferredEncoder((videoEncoder) => {
       const downloadFolder = '../downloads';
-      const command = `yt-dlp --no-playlist -f bestvideo+bestaudio -o "${downloadFolder}/%(title)s.%(ext)s" --merge-output-format mp4 "${url}" --postprocessor-args "ffmpeg:-c:v ${videoEncoder} -crf 23 -preset fast -c:a aac -f mp4"`;
+      const playlistFlag = playlist ? '' : '--no-playlist';
+      const command = `yt-dlp ${playlistFlag} -f bestvideo+bestaudio -o "${downloadFolder}/%(title)s.%(ext)s" --merge-output-format mp4 "${url}" --postprocessor-args "ffmpeg:-c:v ${videoEncoder} -crf 23 -preset fast -c:a aac -f mp4"`;
 
       exec(command, (err, stdout, stderr) => {
         if (err) {

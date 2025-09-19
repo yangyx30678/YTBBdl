@@ -217,10 +217,12 @@ function insertExtraButton() {
   btn.addEventListener("click", () => {
     setBtnDownloading();
 
+    const downloadPlaylist = true;  
+
     fetch("http://localhost:5000/download", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ url: window.location.href })
+      body: JSON.stringify({ url: window.location.href, playlist: downloadPlaylist })
     })
     .then(() => setBtnDownloaded())
     .catch(() => setBtnDefault());
