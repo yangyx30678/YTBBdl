@@ -109,19 +109,6 @@ function insertDownloadButtonBilibili() {
   observer.observe(toolbarLeftMain, { childList: true, subtree: true });
 }
 
-function tryInsert() {
-  setTimeout(() => insertDownloadButtonBilibili(), 1500);
-}
-
-setInterval(() => {
-  if (location.href !== lastUrlBili) {
-    lastUrlBili = location.href;
-    tryInsert();
-  }
-}, 1000);
-
-tryInsert();
-
 function insertExtraButton() {
   const headerLeft = document.querySelector(".header-top .left");
   if (!headerLeft) return;
@@ -217,10 +204,9 @@ function insertExtraButton() {
   btn.addEventListener("click", () => {
     setBtnDownloading();
 
-    const downloadPlaylist = true;  
-
+    // 去掉 &p=
     let url = window.location.href.replace(/([?&])p=\d+/,'');
- // 去掉 &p=
+    
     fetch("http://localhost:5000/download", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -235,4 +221,7 @@ function insertExtraButton() {
 }
 
 // 等待元素載入後再插入
-setTimeout(insertExtraButton, 1000);
+setTimeout(() => {
+    insertDownloadButtonBilibili();
+    insertExtraButton();
+}, 1000);

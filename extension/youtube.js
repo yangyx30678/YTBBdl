@@ -86,11 +86,6 @@ function insertDownloadButton() {
   container.insertBefore(btn, subscribeBtn.nextSibling);
 }
 
-const observer = new MutationObserver(insertDownloadButton);
-observer.observe(document.body, { childList: true, subtree: true });
-
-insertDownloadButton();
-
 function insertPlaylistDownloadButton() {
   if (document.querySelector("#yt-dlp-playlist-download-btn")) return;
 
@@ -138,7 +133,6 @@ function insertPlaylistDownloadButton() {
   btn.addEventListener("click", () => {
     const url = new URL(window.location.href);
     const listId = url.searchParams.get("list");
-    const downloadPlaylist = true;  
     if (!listId) return;
 
     const playlistUrl = `https://www.youtube.com/playlist?list=${listId}`;
@@ -150,7 +144,7 @@ function insertPlaylistDownloadButton() {
       fetch("http://localhost:5000/download", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url: playlistUrl, playlist: downloadPlaylist }),
+        body: JSON.stringify({ url: playlistUrl, playlist: true }),
       }).catch(() => setBtnDefault());
     }
   });
@@ -158,10 +152,15 @@ function insertPlaylistDownloadButton() {
   actionsContainer.appendChild(btn);
 }
 
-// MutationObserver
-const observer1 = new MutationObserver(() => insertPlaylistDownloadButton());
-observer1.observe(document.body, { childList: true, subtree: true });
+// 單一 MutationObserver 監聽 body
+const observer = new MutationObserver(() => {
+    insertDownloadButton();
+    insertPlaylistDownloadButton();
+});
+observer.observe(document.body, { childList: true, subtree: true });
 
+// 嘗試立即插入
+insertDownloadButton();
 insertPlaylistDownloadButton();
 
 
