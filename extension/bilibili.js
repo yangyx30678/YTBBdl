@@ -121,3 +121,113 @@ setInterval(() => {
 }, 1000);
 
 tryInsert();
+
+function insertExtraButton() {
+  const headerLeft = document.querySelector(".header-top .left");
+  if (!headerLeft) return;
+  if (document.querySelector("#extra-btn")) return;
+
+  const btn = document.createElement("button");
+  btn.id = "extra-btn";
+  btn.className = "video-toolbar-left-item";
+  btn.type = "button";
+  btn.style.cursor = "pointer";
+  btn.style.display = "flex";
+  btn.style.alignItems = "center";
+  btn.style.gap = "6px";
+  btn.style.fontSize = "14px";
+  btn.style.border = "none";
+  btn.style.borderRadius = "4px";
+  btn.style.padding = "6px 12px";
+  btn.style.backgroundColor = "transparent";
+  btn.style.transition = "color 0.2s, background-color 0.2s";
+
+  // 狀態函數
+  function setBtnDefault() {
+    btn.disabled = false;
+    btn.style.color = "#61666d"; // 灰色
+    btn.title = "下載影片";
+    btn.innerHTML = `
+      <svg 
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+        <polyline points="7 10 12 15 17 10" />
+        <line x1="12" y1="15" x2="12" y2="3" />
+      </svg>
+    `;
+  }
+
+  function setBtnDownloading() {
+    btn.disabled = true;
+    btn.style.color = "#00aeec"; // 藍色
+    btn.title = "下載中";
+    btn.innerHTML = `
+      <svg 
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+        <polyline points="7 10 12 15 17 10" />
+        <line x1="12" y1="15" x2="12" y2="3" />
+      </svg>
+    `;
+  }
+
+  function setBtnDownloaded() {
+    btn.disabled = false;
+    btn.style.color = "#61666d"; // 下載完成回灰色
+    btn.title = "已下載";
+    btn.innerHTML = `
+      <svg 
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+        <polyline points="6 11 11 16 19 4" />
+      </svg>
+    `;
+  }
+
+  // 初始狀態
+  setBtnDefault();
+
+  btn.addEventListener("click", () => {
+    setBtnDownloading();
+
+    fetch("http://localhost:5000/download", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ url: window.location.href })
+    })
+    .then(() => setBtnDownloaded())
+    .catch(() => setBtnDefault());
+  });
+
+  headerLeft.appendChild(btn);
+}
+
+// 等待元素載入後再插入
+setTimeout(insertExtraButton, 1000);
