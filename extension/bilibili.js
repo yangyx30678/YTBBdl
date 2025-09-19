@@ -13,51 +13,79 @@ function insertDownloadButtonBilibili() {
   btn.id = "bili-dlp-download-btn";
   btn.className = "video-toolbar-left-item";
   btn.type = "button";
-  btn.style.cursor = "pointer";
-  btn.style.display = "flex";
-  btn.style.alignItems = "center";
-  btn.style.gap = "6px";
-  btn.style.padding = "6px 12px";
-  btn.style.fontSize = "14px";
-  btn.style.border = "none";
-  btn.style.borderRadius = "4px";
-  btn.style.backgroundColor = "transparent";  // 保持背景透明或原色
-  btn.style.color = "inherit";  // 保持文字原色
 
-    function setBtnDefault() {
+  // 按鈕樣式
+  Object.assign(btn.style, {
+    cursor: "pointer",
+    display: "flex",
+    alignItems: "center",
+    gap: "6px",
+    fontSize: "14px",
+    border: "none",
+    minWidth: "100px",       // 避免文字擠壓圖示
+    // padding: "6px 12px",
+    // borderRadius: "4px",
+    backgroundColor: "transparent",
+    color: "#61666d",
+    transition: "color 0.4s, background-color 0.4s"
+  });
+
+  // hover 效果
+  btn.addEventListener("mouseenter", () => {
+    if (!btn.disabled) {
+      // btn.style.backgroundColor = "rgba(0,174,236,0.1)";
+      btn.style.color = "#00aeec";
+    }
+  });
+  btn.addEventListener("mouseleave", () => {
+    if (!btn.disabled) {
+      // btn.style.backgroundColor = "transparent";
+      btn.style.color = "#61666d";
+    }
+  });
+
+  function setBtnDefault() {
     btn.disabled = false;
     btn.title = "下載影片";
     btn.innerHTML = `
-      <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M17 18v1H6v-1h11zm-.5-6.6-.7-.7-3.8 3.7V4h-1v10.4l-3.8-3.8-.7.7 5 5 5-4.9z" fill="#666"></path>
+      <svg width="28" height="28" fill="currentColor" viewBox="0 0 24 24">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M9.163 2.819C9 3.139 9 3.559 9 4.4V11H7.803c-.883 0-1.325 0-1.534.176a.75.75 0 0 0-.266.62c.017.274.322.593.931 1.232l4.198 4.401c.302.318.453.476.63.535a.749.749 0 0 0 .476 0c.177-.059.328-.217.63-.535l4.198-4.4c.61-.64.914-.96.93-1.233a.75.75 0 0 0-.265-.62C17.522 11 17.081 11 16.197 11H15V4.4c0-.84 0-1.26-.164-1.581a1.5 1.5 0 0 0-.655-.656C13.861 2 13.441 2 12.6 2h-1.2c-.84 0-1.26 0-1.581.163a1.5 1.5 0 0 0-.656.656zM5 21a1 1 0 0 0 1 1h12a1 1 0 1 0 0-2H6a1 1 0 0 0-1 1z"/>
       </svg>
-      <span style="color:#666">下載</span>
+      <span>下載</span>
     `;
   }
 
   function setBtnDownloading() {
     btn.disabled = true;
+    // btn.style.backgroundColor = "rgba(0,174,236,0.1)";
+    btn.style.color = "#00aeec";
     btn.title = "下載中";
     btn.innerHTML = `
-      <svg width="20" height="20" viewBox="0 0 24 24">
-        <path d="M23 12C23 18.0751 18.0751 23 12 23C5.92487 23 1 18.0751 1 12C1 5.92487 5.92487 1 12 1C18.0751 1 23 5.92487 23 12ZM3.00673 12C3.00673 16.9668 7.03315 20.9933 12 20.9933C16.9668 20.9933 20.9933 16.9668 20.9933 12C20.9933 7.03315 16.9668 3.00673 12 3.00673C7.03315 3.00673 3.00673 7.03315 3.00673 12Z" fill="#007acc"></path>
-        <path d="M17.3596 12.71L11.9996 18.07L6.63965 12.71L8.04965 11.3L10.9996 14.24V6H12.9996V14.24L15.9496 11.29L17.3596 12.71Z" fill="#007acc"></path>
+      <svg width="28" height="28" fill="currentColor" viewBox="0 0 24 24">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M9.163 2.819C9 3.139 9 3.559 9 4.4V11H7.803c-.883 0-1.325 0-1.534.176a.75.75 0 0 0-.266.62c.017.274.322.593.931 1.232l4.198 4.401c.302.318.453.476.63.535a.749.749 0 0 0 .476 0c.177-.059.328-.217.63-.535l4.198-4.4c.61-.64.914-.96.93-1.233a.75.75 0 0 0-.265-.62C17.522 11 17.081 11 16.197 11H15V4.4c0-.84 0-1.26-.164-1.581a1.5 1.5 0 0 0-.655-.656C13.861 2 13.441 2 12.6 2h-1.2c-.84 0-1.26 0-1.581.163a1.5 1.5 0 0 0-.656.656zM5 21a1 1 0 0 0 1 1h12a1 1 0 1 0 0-2H6a1 1 0 0 0-1 1z"/>
       </svg>
-      <span style="color:#666">下載中</span>
+      <span>下載中</span>
     `;
   }
 
   function setBtnDownloaded() {
     btn.disabled = false;
+    btn.style.color = "#61666d";
     btn.title = "已下載";
     btn.innerHTML = `
-      <svg width="20" height="20" viewBox="0 0 24 24">
-        <path d="M12,2C6.5,2,2,6.5,2,12s4.5,10,10,10s10-4.5,10-10S17.5,2,12,2z M17,18H7v-2h10V18z M10.3,14L7,10.7l1.4-1.4l1.9,1.9 l5.3-5.3L17,7.3L10.3,14z" fill="#666"></path>
+      <svg width="28" height="28" fill="currentColor" viewBox="-1 -1 22 22">
+        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+          <g transform="translate(-1265.000000, -526.000000)" stroke="currentColor" stroke-width="2">
+            <g transform="translate(1263.000000, 524.000000)">
+              <path d="M12,3 C16.9705627,3 21,7.02943725 21,12 C21,16.9705627 16.9705627,21 12,21 C7.02943725,21 3,16.9705627 3,12 C3,7.02943725 7.02943725,3 12,3 Z"/>
+              <polyline points="7.71428571 11.6223394 11.2436971 15 16.2857143 9"/>
+            </g>
+          </g>
+        </g>
       </svg>
-      <span style="color:#666">已下載</span>
+      <span>已下載</span>
     `;
   }
-
 
   setBtnDefault();
 
