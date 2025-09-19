@@ -36,7 +36,7 @@ app.post('/download', (req, res) => {
 
     getPreferredEncoder((videoEncoder) => {
       const downloadFolder = '../downloads';
-      const command = `yt-dlp --no-playlist -f bestvideo+bestaudio -o "${downloadFolder}/%(title)s.%(ext)s" "${url}" --postprocessor-args "ffmpeg:-c:v ${videoEncoder} -crf 23 -preset fast -c:a aac -f mp4"`;
+      const command = `yt-dlp --no-playlist -f bestvideo+bestaudio -o "${downloadFolder}/%(title)s.%(ext)s" --merge-output-format mp4 "${url}" --postprocessor-args "ffmpeg:-c:v ${videoEncoder} -crf 23 -preset fast -c:a aac -f mp4"`;
 
       exec(command, (err, stdout, stderr) => {
         if (err) {
