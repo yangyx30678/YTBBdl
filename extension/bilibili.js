@@ -219,11 +219,14 @@ function insertExtraButton() {
 
     const downloadPlaylist = true;  
 
+    let url = window.location.href.replace(/([?&])p=\d+/,'');
+ // 去掉 &p=
     fetch("http://localhost:5000/download", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ url: window.location.href, playlist: downloadPlaylist })
+      body: JSON.stringify({ url, playlist: true })
     })
+
     .then(() => setBtnDownloaded())
     .catch(() => setBtnDefault());
   });
